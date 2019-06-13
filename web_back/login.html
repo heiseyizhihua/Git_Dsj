@@ -56,6 +56,20 @@
     <script src="./js/bootstrap/js/bootstrap.min.js"></script>
     <script>
         $(function () {
+            /*
+            步骤:
+            1.给登录按钮设置一个点击事件,取消默认跳转
+                获取用户输入的账号和密码
+                做一个非空判断,如果为空,弹框提示一下,如果不为空,继续
+            2.发送ajax请求,接受到数据接口返回的数据
+                根据这个数据判断
+                如果账号密码正确,就应该登录成功跳转到后台管理的首页.index.html
+                如果账号密码错误,就弹框提示
+            */
+
+
+
+
             //给登录按钮设置点击事件,取消默认跳转
             $('.input_sub').on('click', function (e) {
                 e.preventDefault();
@@ -65,12 +79,15 @@
                 var password = $('.input_pass').val().trim();
                 if (userName == '' || password == '') {
                     //alert('账号密码不能为空,请重新输入!!!')
+                    //设置弹出框的文本
                     $('.modal-body').text('账号密码不能为空,请重新输入!!!')
+                    //调用bs的方法,弹出模态框
                     $('#myModal').modal({
                         keyboard:true,
                     })
                     return;
                 }
+                //发送ajax请求,接受到数据接口返回的数据
                 $.ajax({
                     type: 'post',
                     url: 'https://autumnfish.cn/big/admin/login',
@@ -80,13 +97,16 @@
                     },
                     success: function (backData) {
                         //console.log(backData);
+                        //判断
                         if (backData.code != 200) {
                             //alert('账号密码错误,请重新输入');
+                            //设置弹出框的文本
                             $('.modal-body').text('账号密码错误,请重新输入!!!')
                             $('#myModal').modal({
                                 keyboard:true,
                             })
                         } else {
+                            //账号密码正确,就应该登录成功,跳转到后台管理首页.
                             window.location.href = './index.html';
                         }
 
