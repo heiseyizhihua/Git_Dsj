@@ -180,37 +180,38 @@
 
             //点击模态框中的  确认按钮
             $('#model_add').click(function () {
-
+                //判断这个按钮有没有btn-success类,如果有这个类,那就是保存
                 if ($(this).hasClass('btn-success')) {
+                    //获取用户 修改之后的 类型名  和类型别名.
                     // var editId = $('#recipient-id').val();
                     // var editName = $('#recipient-name').val();
                     // var editNickName = $('#recipient-nickname').val();
-                    
+
                     //这个方法是jQuery的方法,
                     //会把form表单里面有name属性的元素的值.
                     //拼接成name=value&name2=value2这种格式的字符串
                     //id=8&name=军事2&slug=junshi   
                     //代替上面三句
-                    var data1 = $('form').serialize();//序列化
+                    var data1 = $('form').serialize(); //序列化
 
                     //发送ajax请求
                     $.ajax({
-                        type:'post',
-                        url:'http://localhost:8000/admin/category_edit',
+                        type: 'post',
+                        url: 'http://localhost:8000/admin/category_edit',
                         // data:{
                         //     id:editId,
                         //     name:editName,
                         //     slug:editNickName
                         // },
-                        data:data1,
-                        success:function(backData){
+                        data: data1,
+                        success: function (backData) {
                             //console.log(backData);
-                            if(backData.code == 200){
+                            //修改成功后,重新渲染数据
+                            if (backData.code == 200) {
                                 getCategory();
                             }
-                            
                         }
-                    })
+                    });
                 } else {
                     //获取用户新增的 文字类别和别名
                     var recipient_name = $('#recipient-name').val();
@@ -232,22 +233,21 @@
                         }
                     });
                 }
-
-
-
-
                 //隐藏模态框
                 $('#addModal').modal('hide');
             });
 
-            $('tbody').on('click', 'a.btn-edit', function () {
 
-                var id = $(this).attr('data-id');
+            //给编辑按钮设置点击事件.委托方式注册
+            $('tbody').on('click', 'a.btn-edit', function () {
+                //获取当前点击的这个编辑按钮 对应的文章类别名和文章类别别名
+                var id = $(this).attr('data-id');//获取当前点击的编辑按钮 中的自定义属性存放的id
                 //文章类型名
                 var name = $(this).parent().prev().prev().text();
                 //文章类型别名
                 var slug = $(this).parent().prev().text();
 
+                //把这两个值赋值给弹出来的模态框的input标签.
                 $('#recipient-name').val(name);
                 $('#recipient-nickname').val(slug);
                 $('#recipient-id').val(id)
@@ -257,7 +257,13 @@
                 $('#addModal').modal('show');
             });
 
+            //点击新增分类 按钮, 弹出的模态框里面的样式/名字还原
             $('#addCategory').on('click', function () {
+                //把弹出的模态框中的input给清空.
+                $('#recipient-id').val('');
+                $('#recipient-name').val('');
+                $('#recipient-nickname').val('');
+
                 $('#addModal .modal-title').html('新增分类');
                 $('#model_add').text('新增').removeClass('btn-success');
             })
