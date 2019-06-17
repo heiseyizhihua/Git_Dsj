@@ -73,7 +73,8 @@
                 <tfoot>
                     <tr>
                         <td colspan="3" class="text-center">
-                            <a href="#" class="btn btn-success" data-toggle="modal" data-target="#addModal" id="addCategory">新增分类</a>
+                            <a href="#" class="btn btn-success" data-toggle="modal" data-target="#addModal"
+                                id="addCategory">新增分类</a>
                         </td>
                     </tr>
                 </tfoot>
@@ -178,38 +179,54 @@
 
             //点击模态框中的  确认按钮
             $('#model_add').click(function () {
-                //获取用户新增的 文字类别和别名
-                var recipient_name = $('#recipient-name').val();
-                var recipient_nickname = $('#recipient-nickname').val();
 
-                $.ajax({
-                    type: 'post',
-                    url: 'http://localhost:8000/admin/category_add',
-                    data: {
-                        name: recipient_name,
-                        slug: recipient_nickname
-                    },
-                    success: function (backData) {
-                        console.log(backData);
-                        if (backData.code == 200) {
-                            //新增成功后,重新的发送一次ajax请求加载所有的文字类别
-                            getCategory();
+                if ($(this).hasClass('btn-success')) {
+
+                } else {
+                    //获取用户新增的 文字类别和别名
+                    var recipient_name = $('#recipient-name').val();
+                    var recipient_nickname = $('#recipient-nickname').val();
+                    //发送ajax请求
+                    $.ajax({
+                        type: 'post',
+                        url: 'http://localhost:8000/admin/category_add',
+                        data: {
+                            name: recipient_name,
+                            slug: recipient_nickname
+                        },
+                        success: function (backData) {
+                            console.log(backData);
+                            if (backData.code == 200) {
+                                //新增成功后,重新的发送一次ajax请求加载所有的文字类别
+                                getCategory();
+                            }
                         }
+                    });
+                }
 
-                    }
-                })
+
+
+
                 //隐藏模态框
                 $('#addModal').modal('hide');
             });
 
             $('tbody').on('click', 'a.btn-edit', function () {
 
+                //文章类型名
+                var name = $(this).parent().prev().prev().text();
+                //文章类型别名
+                var slug = $(this).parent().prev().text();
+
+                $('#recipient-name').val(name);
+                $('#recipient-nickname').val(slug);
+
                 $('#addModal .modal-title').html('修改分类');
                 $('#model_add').text('保存').addClass('btn-success');
                 $('#addModal').modal('show');
             });
 
-            $('#addCategory').on('click',function(){
+            $('#addCategory').on('click', function () {
                 $('#addModal .modal-title').html('新增分类');
                 $('#model_add').text('新增').removeClass('btn-success');
             })
